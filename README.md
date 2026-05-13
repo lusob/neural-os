@@ -6,13 +6,25 @@
 
 ![demo](neural_os.gif)
 
-## how it works
+## two approaches
 
-two tiny neural networks running in your browser via [ONNX Runtime Web](https://onnxruntime.ai/docs/tutorials/web/). no server, no physics engine, no event system.
+this repo has two experiments that tackle the same problem differently.
 
-### the model: SplitGenie
+### approach 1: pixel prediction (colab)
 
-a two-headed MLP (~39KB) with separate hemispheres for moving and resizing:
+the first approach is the more radical one. a U-Net takes the last 2 frames of the screen as input (one-hot encoded by color class) plus a mouse vector (dx, dy, click), and predicts the next frame pixel by pixel. no renderer, no window state, no coordinates anywhere. the network is the window manager.
+
+```
+stacked frames [B, 8, 128, 128] + motion [B, 3]  ->  next frame logits [B, 4, 128, 128]
+```
+
+it works, the window moves and the cursor follows. but it drifts over time because theres no explicit position stored anywhere, the model infers where the window is from what it sees. open the [colab](https://colab.research.google.com/drive/1wrc67GjQErvWOsWSwoWndiKf-Wx-EZpz) to train it from scratch and see the autoregressive gif it generates.
+
+### approach 2: learned behavior + js renderer (live demo)
+
+the second approach is a middle ground. the renderer is still deterministic (rectangles drawn in canvas), but the *behavior* of the window is learned. a two-headed MLP called SplitGenie takes distances from the cursor to the titlebar and the resize grip, and outputs velocity and resize deltas. the js renderer applies those deltas every frame.
+
+this is what runs in the [live demo](https://lusob.github.io/neural-os/). the model is 39KB and loads instantly.
 
 ```
 input: [dist_to_header_x, dist_to_header_y, dist_to_grip_x, dist_to_grip_y, click]  ->  5 floats
@@ -26,19 +38,9 @@ input: [dist_to_header_x, dist_to_header_y, dist_to_grip_x, dist_to_grip_y, clic
                      output: [delta_w, delta_h]
 ```
 
-the two heads share nothing except the click signal, so the model cant confuse dragging with resizing.
+the two heads share nothing except the click signal, so the model cant confuse dragging with resizing. theres no if/else for that anywhere, the network learned the decision boundary from 40k synthetic examples.
 
-### training data
-
-40,000 synthetic examples generated analytically:
-- move fires when cursor is within `HEADER_TOLERANCE=0.25` of the titlebar center
-- resize fires when cursor is within `GRIP_TOLERANCE=0.15` of the corner grip
-- resize takes priority over move when both zones overlap
-- loss: MSE, trained with Adam for 10 epochs
-
-no real interaction recorded, the behavior is learned purely from the geometry of the zones.
-
-### what the side panel shows
+### what the side panel shows (live demo)
 
 - **DIST HEADER / DIST GRIP**: radar showing cursor distance to each interaction zone
 - **Neural Activity**: activations of the last hidden layer of each hemisphere (green = move, orange = resize)
@@ -46,12 +48,12 @@ no real interaction recorded, the behavior is learned purely from the geometry o
 
 ### the interesting part
 
-theres no `if/else` for "are we dragging or resizing". the network learned the decision boundary from examples. you can feel it near the edges, when the cursor is between the titlebar and the grip corner the network's uncertainty is visible as the window hesitates between modes.
+you can feel the network's learned space when you interact with it. drag near the titlebar and it moves, get close to the corner and it switches to resize. sometimes it gets confused near the edges, which is honestly more interesting than if it just worked perfectly, you can sense the probability mass shifting.
 
 ## run it yourself
 
-open the [colab notebook](https://colab.research.google.com/drive/1wrc67GjQErvWOsWSwoWndiKf-Wx-EZpz) to retrain the model from scratch. takes ~2 minutes on a free GPU.
+open the [colab notebook](https://colab.research.google.com/drive/1wrc67GjQErvWOsWSwoWndiKf-Wx-EZpz) to retrain both models from scratch. takes ~2 minutes on a free GPU.
 
 ## related
 
-Meta AI published [Neural Computers](https://arxiv.org/abs/2604.06425) (Zhuge et al., 2026), same idea scaled up: a video model that predicts full screen frames conditioned on pixels + instructions + user actions, for both CLI and GUI. their open problems ("challenges remain with routine reuse, controlled updates, and symbolic stability") are the same walls this experiment hits.
+Meta AI published [Neural Computers](https://arxiv.org/abs/2604.06425) (Zhuge et al., 2026), same idea scaled up: a video model that predicts full screen frames conditioned on pixels + instructions + user actions, for both CLI and GUI. their open problems ("challenges remain with routine reuse, controlled updates, and symbolic stability") are the same walls the pixel approach hits.
