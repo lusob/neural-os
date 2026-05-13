@@ -322,10 +322,10 @@
   }
 
   function drawOS() {
-    ctxOS.fillStyle = '#050505'; ctxOS.fillRect(0, 0, W, H);
+    ctxOS.fillStyle = '#e8eaf0'; ctxOS.fillRect(0, 0, W, H);
 
     // Grid
-    ctxOS.strokeStyle = '#0d0d0d'; ctxOS.lineWidth = 1;
+    ctxOS.strokeStyle = '#d8dae0'; ctxOS.lineWidth = 1;
     for (let x = 0; x < W; x += 50) { ctxOS.beginPath(); ctxOS.moveTo(x,0); ctxOS.lineTo(x,H); ctxOS.stroke(); }
     for (let y = 0; y < H; y += 50) { ctxOS.beginPath(); ctxOS.moveTo(0,y); ctxOS.lineTo(W,y); ctxOS.stroke(); }
 
@@ -338,35 +338,39 @@
     const onHeader = mx > px && mx < px + pw && my > py && my < py + hh;
     const onGrip   = mx > px + pw - gs && mx < px + pw && my > py + ph - gs && my < py + ph;
 
+    // Shadow
+    ctxOS.fillStyle = 'rgba(0,0,0,0.08)';
+    ctxOS.fillRect(px + 4, py + 4, pw, ph);
+
     // Window body
-    ctxOS.fillStyle = '#0a0a0a';
+    ctxOS.fillStyle = '#ffffff';
     ctxOS.fillRect(px, py + hh, pw, ph - hh);
 
     // Titlebar
-    ctxOS.fillStyle = (click && onHeader) ? '#003300' : '#0d1a0d';
+    ctxOS.fillStyle = (click && onHeader) ? '#4a90d9' : '#6c8ebf';
     ctxOS.fillRect(px, py, pw, hh);
 
     // Titlebar label
-    ctxOS.fillStyle = '#1a3a1a';
-    ctxOS.font = '10px monospace';
+    ctxOS.fillStyle = '#fff';
+    ctxOS.font = '11px monospace';
     ctxOS.fillText('window.neural', px + 8, py + hh / 2 + 4);
 
     // Grip corner
-    ctxOS.fillStyle = (click && onGrip) ? '#442200' : '#1a1200';
+    ctxOS.fillStyle = (click && onGrip) ? '#e07020' : '#c8c8c8';
     ctxOS.fillRect(px + pw - gs, py + ph - gs, gs, gs);
-    ctxOS.fillStyle = (click && onGrip) ? '#f80' : '#333';
+    ctxOS.fillStyle = (click && onGrip) ? '#fff' : '#888';
     ctxOS.font = '10px monospace';
     ctxOS.fillText('⊞', px + pw - gs + 4, py + ph - 4);
 
     // Border
-    ctxOS.strokeStyle = '#222'; ctxOS.lineWidth = 1;
+    ctxOS.strokeStyle = '#aab'; ctxOS.lineWidth = 1;
     ctxOS.strokeRect(px, py, pw, ph);
 
     // Cursor
-    ctxOS.fillStyle = click ? '#fff' : '#555';
+    ctxOS.fillStyle = click ? '#333' : '#666';
     ctxOS.beginPath(); ctxOS.arc(mx, my, 4, 0, Math.PI * 2); ctxOS.fill();
     if (!click) {
-      ctxOS.strokeStyle = '#333'; ctxOS.lineWidth = 1;
+      ctxOS.strokeStyle = '#999'; ctxOS.lineWidth = 1;
       ctxOS.beginPath(); ctxOS.arc(mx, my, 7, 0, Math.PI * 2); ctxOS.stroke();
     }
   }
