@@ -8,334 +8,455 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #0a0a0a;
-      color: #ccc;
+      background: #000;
+      color: #ddd;
       font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      padding: 40px 20px;
+      padding: 30px 20px;
     }
 
     header {
       text-align: center;
-      margin-bottom: 32px;
-      max-width: 600px;
+      margin-bottom: 24px;
+      max-width: 700px;
     }
 
-    h1 {
-      font-size: 18px;
-      color: #fff;
-      letter-spacing: 0.05em;
-      margin-bottom: 10px;
-    }
+    h1 { font-size: 16px; color: #fff; letter-spacing: 0.08em; margin-bottom: 8px; }
 
-    .subtitle {
-      font-size: 12px;
-      color: #555;
-      line-height: 1.6;
-    }
+    .subtitle { font-size: 11px; color: #444; line-height: 1.7; }
+    .subtitle a { color: #0a0; text-decoration: none; }
+    .subtitle a:hover { color: #0f0; }
 
-    .subtitle a {
-      color: #0f0;
-      text-decoration: none;
-    }
-
-    .subtitle a:hover { text-decoration: underline; }
-
-    #wrapper {
-      position: relative;
-      border: 1px solid #222;
-      border-radius: 6px;
-      overflow: hidden;
-      background: #000;
-    }
-
-    #os-canvas {
-      display: block;
-      width: 512px;
-      height: 512px;
-      image-rendering: pixelated;
-      cursor: none;
-    }
-
-    #overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+    /* ── Main layout ── */
+    .layout {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.85);
-      transition: opacity 0.4s;
+      gap: 15px;
+      background: #000;
+      padding: 15px;
+      border: 1px solid #1a1a1a;
+      border-radius: 12px;
     }
 
-    #overlay.hidden { opacity: 0; pointer-events: none; }
+    #cvs_os {
+      border: 2px solid #222;
+      background: #050505;
+      border-radius: 4px;
+      cursor: none;
+      display: block;
+    }
 
-    #overlay-text {
-      font-size: 13px;
-      color: #0f0;
+    /* ── Side panel ── */
+    .panel { width: 260px; display: flex; flex-direction: column; gap: 10px; }
+
+    .card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 10px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 1px solid #1e1e1e;
+      padding-bottom: 5px;
+    }
+
+    .label {
+      font-size: 10px;
+      color: #444;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+
+    .bar-track {
+      background: #1a1a1a;
+      height: 5px;
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
       margin-bottom: 8px;
     }
 
-    #progress-bar-wrap {
-      width: 200px;
-      height: 2px;
-      background: #222;
-      border-radius: 2px;
-      overflow: hidden;
-    }
+    .bar-val { height: 100%; position: absolute; transition: width 0.05s, left 0.05s; }
 
-    #progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #0f0;
-      transition: width 0.2s;
-    }
-
-    #status {
+    #status_box {
       margin-top: 10px;
-      font-size: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
       color: #333;
+      padding: 10px;
+      border: 1px solid #1e1e1e;
+      background: #080808;
+      border-radius: 4px;
       letter-spacing: 0.1em;
     }
 
+    /* ── Footer ── */
     footer {
-      margin-top: 24px;
-      max-width: 512px;
-      width: 100%;
-    }
-
-    .instructions {
+      margin-top: 20px;
       display: flex;
-      gap: 24px;
-      font-size: 11px;
-      color: #444;
-      margin-bottom: 16px;
-    }
-
-    .instructions span { display: flex; align-items: center; gap: 6px; }
-
-    .key {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 3px;
-      padding: 1px 6px;
-      color: #888;
-      font-size: 10px;
-    }
-
-    .links {
-      display: flex;
-      gap: 16px;
+      gap: 20px;
       font-size: 11px;
     }
 
-    .links a {
-      color: #444;
+    footer a {
+      color: #333;
       text-decoration: none;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #1e1e1e;
       padding-bottom: 1px;
       transition: color 0.2s, border-color 0.2s;
     }
 
-    .links a:hover { color: #0f0; border-color: #0f0; }
+    footer a:hover { color: #0f0; border-color: #0f0; }
 
-    .dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #0f0;
-      margin-right: 6px;
-      animation: blink 1.2s infinite;
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 100;
     }
 
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    #loading.hidden { display: none; }
+
+    #load-text { font-size: 12px; color: #0f0; }
+
+    #load-bar-wrap {
+      width: 180px; height: 2px;
+      background: #111; border-radius: 2px; overflow: hidden;
+    }
+
+    #load-bar { height: 100%; width: 0%; background: #0f0; transition: width 0.2s; }
   </style>
 </head>
 <body>
 
+<div id="loading">
+  <div id="load-text">Loading model...</div>
+  <div id="load-bar-wrap"><div id="load-bar"></div></div>
+</div>
+
 <header>
-  <h1>NeuralOS</h1>
+  <h1>NEURAL OS</h1>
   <p class="subtitle">
-    A U-Net trained to predict the next screen frame given mouse input.<br>
-    No OS. No physics engine. Just learned behavior from 8,000 frames.<br>
+    A two-headed MLP that learned window behavior from examples — no physics, no event system.<br>
+    Drag near the titlebar to move. Drag near the bottom-right corner to resize.<br>
     <a href="https://arxiv.org/abs/2604.06425" target="_blank">Related: Meta's Neural Computers (2026)</a>
   </p>
 </header>
 
-<div id="wrapper">
-  <canvas id="os-canvas" width="128" height="128"></canvas>
+<div class="layout">
+  <div style="position:relative;">
+    <div style="position:absolute; top:8px; left:10px; color:#222; font-size:11px; pointer-events:none; letter-spacing:0.05em;">NEURAL OS</div>
+    <canvas id="cvs_os" width="800" height="500"></canvas>
+  </div>
 
-  <div id="overlay">
-    <div id="overlay-text">Loading model...</div>
-    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
-    <div id="status">neural_os.onnx · 2.4 MB</div>
+  <div class="panel">
+
+    <div style="text-align:center;">
+      <button onclick="resetWindow()" style="background:#1a0000; color:#f55; border:1px solid #440000; padding:7px 0; cursor:pointer; font-family:inherit; font-size:11px; border-radius:4px; width:100%; letter-spacing:0.1em;">RESET</button>
+    </div>
+
+    <div class="card">
+      <h4>Inputs</h4>
+      <div class="label"><span>CLICK</span><span id="lbl_click">IDLE</span></div>
+      <div class="bar-track"><div id="bar_click" class="bar-val" style="width:0%; background:#fff; left:0;"></div></div>
+
+      <div style="display:flex; gap:6px; margin-top:4px;">
+        <div style="flex:1;">
+          <div class="label">DIST HEADER</div>
+          <canvas id="vis_in_move" width="110" height="55" style="background:#000; border:1px solid #1e1e1e; width:100%; display:block;"></canvas>
+        </div>
+        <div style="flex:1;">
+          <div class="label">DIST GRIP</div>
+          <canvas id="vis_in_resize" width="110" height="55" style="background:#000; border:1px solid #1e1e1e; width:100%; display:block;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>Neural Activity</h4>
+      <canvas id="vis_brain" width="240" height="55" style="width:100%; image-rendering:pixelated; background:#000; display:block;"></canvas>
+      <div style="display:flex; justify-content:center; gap:16px; margin-top:5px; font-size:10px; color:#333;">
+        <span style="color:#0a0;">&#9632; MOVE</span>
+        <span style="color:#840;">&#9632; RESIZE</span>
+      </div>
+    </div>
+
+    <div class="card" style="flex-grow:1;">
+      <h4>Motor Output</h4>
+
+      <div class="label"><span>VEL X</span><span id="lbl_vx">0.00</span></div>
+      <div class="bar-track"><div id="bar_vx" class="bar-val" style="background:#0f0; left:50%; width:0%;"></div></div>
+
+      <div class="label"><span>VEL Y</span><span id="lbl_vy">0.00</span></div>
+      <div class="bar-track"><div id="bar_vy" class="bar-val" style="background:#0f0; left:50%; width:0%;"></div></div>
+
+      <div style="height:1px; background:#1e1e1e; margin:8px 0;"></div>
+
+      <div class="label"><span>RESIZE W</span><span id="lbl_rw">0.00</span></div>
+      <div class="bar-track"><div id="bar_rw" class="bar-val" style="background:#f80; left:50%; width:0%;"></div></div>
+
+      <div class="label"><span>RESIZE H</span><span id="lbl_rh">0.00</span></div>
+      <div class="bar-track"><div id="bar_rh" class="bar-val" style="background:#f80; left:50%; width:0%;"></div></div>
+
+      <div id="status_box">IDLE</div>
+    </div>
+
   </div>
 </div>
 
 <footer>
-  <div class="instructions">
-    <span><span class="key">move</span> Move cursor</span>
-    <span><span class="key">click + drag</span> Drag window by titlebar</span>
-  </div>
-  <div class="links">
-    <a href="https://colab.research.google.com/drive/1wrc67GjQErvWOsWSwoWndiKf-Wx-EZpz" target="_blank">Open in Colab</a>
-    <a href="https://github.com/lusob/neural-os" target="_blank">Source on GitHub</a>
-    <a href="https://arxiv.org/abs/2604.06425" target="_blank">Neural Computers paper</a>
-  </div>
+  <a href="https://colab.research.google.com/drive/1wrc67GjQErvWOsWSwoWndiKf-Wx-EZpz" target="_blank">Open in Colab</a>
+  <a href="https://github.com/lusob/neural-os" target="_blank">Source on GitHub</a>
+  <a href="https://arxiv.org/abs/2604.06425" target="_blank">Neural Computers paper</a>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.3/dist/ort.min.js"></script>
 <script>
 (() => {
-  const W  = 128, H = 128, NC = 4, SS = 2;
-  const PALETTE = [
-    [0,   128, 128, 255],  // 0 — teal background
-    [192, 192, 192, 255],  // 1 — silver window body
-    [0,   0,   128, 255],  // 2 — navy titlebar
-    [255, 255, 255, 255],  // 3 — white cursor
-  ];
+  const W = 800, H = 500;
+  const HEADER_H = 0.12;
+  const GRIP_S   = 0.12;
+  const INIT     = { x: 0.2, y: 0.2, w: 0.5, h: 0.4 };
 
-  const canvas  = document.getElementById('os-canvas');
-  const ctx     = canvas.getContext('2d');
-  const overlay = document.getElementById('overlay');
-  const overlayText = document.getElementById('overlay-text');
-  const progressBar = document.getElementById('progress-bar');
+  const cvsOS    = document.getElementById('cvs_os');
+  const ctxOS    = cvsOS.getContext('2d');
+  const ctxBrain = document.getElementById('vis_brain').getContext('2d');
+  const ctxInM   = document.getElementById('vis_in_move').getContext('2d');
+  const ctxInR   = document.getElementById('vis_in_resize').getContext('2d');
+  const loading  = document.getElementById('loading');
+  const loadBar  = document.getElementById('load-bar');
+  const loadText = document.getElementById('load-text');
+
+  const ui = {
+    click:    document.getElementById('bar_click'),
+    lblClick: document.getElementById('lbl_click'),
+    vx: document.getElementById('bar_vx'), lbl_vx: document.getElementById('lbl_vx'),
+    vy: document.getElementById('bar_vy'), lbl_vy: document.getElementById('lbl_vy'),
+    rw: document.getElementById('bar_rw'), lbl_rw: document.getElementById('lbl_rw'),
+    rh: document.getElementById('bar_rh'), lbl_rh: document.getElementById('lbl_rh'),
+    status: document.getElementById('status_box'),
+  };
 
   let sess  = null;
-  let stack = [];
-  let mx = W / 2, my = H / 2;
-  let dx = 0, dy = 0, click = 0;
-  let running = false;
+  let win   = { ...INIT };
+  let mouse = { x: 0.5, y: 0.5 };
+  let click = 0.0;
 
-  // ── Seed frame ──────────────────────────────────────────────────────────────
-  // Matches the initial state used during training
-  function buildSeedFrame() {
-    const f = new Float32Array(NC * H * W);
-    for (let y = 0; y < H; y++) {
-      for (let x = 0; x < W; x++) {
-        const i = y * W + x;
-        let cls = 0;
-        if (x >= 30 && x < 90 && y >= 40 && y < 90) cls = 1;  // window body
-        if (x >= 30 && x < 90 && y >= 40 && y < 55) cls = 2;  // titlebar
-        if (x >= 62 && x < 66 && y >= 62 && y < 66) cls = 3;  // cursor
-        f[cls * (H * W) + i] = 1.0;
-      }
-    }
-    return f;
-  }
+  window.resetWindow = () => { win = { ...INIT }; };
 
-  // ── Mouse input ─────────────────────────────────────────────────────────────
-  canvas.addEventListener('mousemove', e => {
-    const r  = canvas.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width  * W;
-    const ny = (e.clientY - r.top)  / r.height * H;
-    dx = (nx - mx) / 4.0;
-    dy = (ny - my) / 4.0;
-    mx = nx; my = ny;
+  cvsOS.addEventListener('mousemove', e => {
+    const r = cvsOS.getBoundingClientRect();
+    mouse.x = (e.clientX - r.left) / W;
+    mouse.y = (e.clientY - r.top)  / H;
   });
-  canvas.addEventListener('mousedown', () => click = 1.0);
-  canvas.addEventListener('mouseup',   () => click = 0.0);
-  canvas.addEventListener('mouseleave',() => { dx = 0; dy = 0; });
+  cvsOS.addEventListener('mousedown', () => click = 1.0);
+  cvsOS.addEventListener('mouseup',   () => click = 0.0);
+  cvsOS.addEventListener('mouseleave',() => click = 0.0);
 
-  // Touch support (mobile)
-  let lastTx = null, lastTy = null;
-  canvas.addEventListener('touchstart', e => {
+  // Touch
+  let lastTx = 0.5, lastTy = 0.5;
+  cvsOS.addEventListener('touchstart', e => {
     e.preventDefault();
-    const t = e.touches[0];
-    const r = canvas.getBoundingClientRect();
-    lastTx = (t.clientX - r.left) / r.width  * W;
-    lastTy = (t.clientY - r.top)  / r.height * H;
+    const r = cvsOS.getBoundingClientRect();
+    lastTx = mouse.x = (e.touches[0].clientX - r.left) / W;
+    lastTy = mouse.y = (e.touches[0].clientY - r.top)  / H;
     click = 1.0;
   }, { passive: false });
-  canvas.addEventListener('touchmove', e => {
+  cvsOS.addEventListener('touchmove', e => {
     e.preventDefault();
-    const t = e.touches[0];
-    const r = canvas.getBoundingClientRect();
-    const nx = (t.clientX - r.left) / r.width  * W;
-    const ny = (t.clientY - r.top)  / r.height * H;
-    dx = (nx - lastTx) / 4.0;
-    dy = (ny - lastTy) / 4.0;
-    lastTx = nx; lastTy = ny;
+    const r = cvsOS.getBoundingClientRect();
+    mouse.x = (e.touches[0].clientX - r.left) / W;
+    mouse.y = (e.touches[0].clientY - r.top)  / H;
   }, { passive: false });
-  canvas.addEventListener('touchend', () => { click = 0.0; dx = 0; dy = 0; });
+  cvsOS.addEventListener('touchend', () => { click = 0.0; });
 
-  // ── Inference loop ───────────────────────────────────────────────────────────
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+  function drawRadar(ctx, dx, dy, color) {
+    const cw = ctx.canvas.width, ch = ctx.canvas.height;
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
+    ctx.strokeStyle = '#1a1a1a'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cw/2, 0); ctx.lineTo(cw/2, ch); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, ch/2); ctx.lineTo(cw, ch/2); ctx.stroke();
+    const px = cw/2 + dx * 2 * cw/2;
+    const py = ch/2 + dy * 2 * ch/2;
+    ctx.strokeStyle = color; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cw/2, ch/2); ctx.lineTo(px, py); ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(px, py, 3, 0, Math.PI * 2); ctx.fill();
+  }
+
+  function drawBar(el, lbl, val) {
+    const pct = Math.min(1.0, Math.abs(val)) * 50;
+    el.style.width = pct + '%';
+    el.style.left  = val >= 0 ? '50%' : (50 - pct) + '%';
+    lbl.textContent = val.toFixed(2);
+  }
+
+  function drawBrain(m2, r2) {
+    const bw = ctxBrain.canvas.width, bh = ctxBrain.canvas.height;
+    ctxBrain.clearRect(0, 0, bw, bh);
+    const cw = bw / 64;
+    for (let i = 0; i < 64; i++) {
+      ctxBrain.fillStyle = `rgba(0,200,0,${m2[i]})`;
+      ctxBrain.fillRect(i * cw, 0, cw - 1, bh / 2 - 1);
+      ctxBrain.fillStyle = `rgba(255,140,0,${r2[i]})`;
+      ctxBrain.fillRect(i * cw, bh / 2, cw - 1, bh / 2);
+    }
+  }
+
+  function drawOS() {
+    ctxOS.fillStyle = '#050505'; ctxOS.fillRect(0, 0, W, H);
+
+    // Grid
+    ctxOS.strokeStyle = '#0d0d0d'; ctxOS.lineWidth = 1;
+    for (let x = 0; x < W; x += 50) { ctxOS.beginPath(); ctxOS.moveTo(x,0); ctxOS.lineTo(x,H); ctxOS.stroke(); }
+    for (let y = 0; y < H; y += 50) { ctxOS.beginPath(); ctxOS.moveTo(0,y); ctxOS.lineTo(W,y); ctxOS.stroke(); }
+
+    const px = win.x * W,  py = win.y * H;
+    const pw = win.w * W,  ph = win.h * H;
+    const hh = HEADER_H * H;
+    const gs = GRIP_S * Math.min(W, H);
+
+    const mx = mouse.x * W, my = mouse.y * H;
+    const onHeader = mx > px && mx < px + pw && my > py && my < py + hh;
+    const onGrip   = mx > px + pw - gs && mx < px + pw && my > py + ph - gs && my < py + ph;
+
+    // Window body
+    ctxOS.fillStyle = '#0a0a0a';
+    ctxOS.fillRect(px, py + hh, pw, ph - hh);
+
+    // Titlebar
+    ctxOS.fillStyle = (click && onHeader) ? '#003300' : '#0d1a0d';
+    ctxOS.fillRect(px, py, pw, hh);
+
+    // Titlebar label
+    ctxOS.fillStyle = '#1a3a1a';
+    ctxOS.font = '10px monospace';
+    ctxOS.fillText('window.neural', px + 8, py + hh / 2 + 4);
+
+    // Grip corner
+    ctxOS.fillStyle = (click && onGrip) ? '#442200' : '#1a1200';
+    ctxOS.fillRect(px + pw - gs, py + ph - gs, gs, gs);
+    ctxOS.fillStyle = (click && onGrip) ? '#f80' : '#333';
+    ctxOS.font = '10px monospace';
+    ctxOS.fillText('⊞', px + pw - gs + 4, py + ph - 4);
+
+    // Border
+    ctxOS.strokeStyle = '#222'; ctxOS.lineWidth = 1;
+    ctxOS.strokeRect(px, py, pw, ph);
+
+    // Cursor
+    ctxOS.fillStyle = click ? '#fff' : '#555';
+    ctxOS.beginPath(); ctxOS.arc(mx, my, 4, 0, Math.PI * 2); ctxOS.fill();
+    if (!click) {
+      ctxOS.strokeStyle = '#333'; ctxOS.lineWidth = 1;
+      ctxOS.beginPath(); ctxOS.arc(mx, my, 7, 0, Math.PI * 2); ctxOS.stroke();
+    }
+  }
+
+  // ── Inference loop ────────────────────────────────────────────────────────────
   async function loop() {
-    const input = new Float32Array(SS * NC * H * W);
-    stack.forEach((f, i) => input.set(f, i * NC * H * W));
+    if (sess) {
+      const head_cx = win.x + win.w / 2;
+      const head_cy = win.y + HEADER_H / 2;
+      const grip_cx = win.x + win.w - GRIP_S / 2;
+      const grip_cy = win.y + win.h - GRIP_S / 2;
 
-    const result = await sess.run({
-      input_img:    new ort.Tensor('float32', input,                             [1, NC * SS, H, W]),
-      input_motion: new ort.Tensor('float32', new Float32Array([dx, dy, click]), [1, 3])
-    });
+      const dhx = mouse.x - head_cx;
+      const dhy = mouse.y - head_cy;
+      const dgx = mouse.x - grip_cx;
+      const dgy = mouse.y - grip_cy;
 
-    const logits  = result.output_frame.data;
-    const imgData = ctx.createImageData(W, H);
-    const nextF   = new Float32Array(NC * H * W);
+      try {
+        const res = await sess.run({
+          data: new ort.Tensor('float32', new Float32Array([dhx, dhy, dgx, dgy, click]), [1, 5])
+        });
 
-    for (let i = 0; i < H * W; i++) {
-      let maxVal = -Infinity, cls = 0;
-      for (let c = 0; c < NC; c++) {
-        const v = logits[c * H * W + i];
-        if (v > maxVal) { maxVal = v; cls = c; }
-      }
-      const p = PALETTE[cls];
-      imgData.data[i * 4]     = p[0];
-      imgData.data[i * 4 + 1] = p[1];
-      imgData.data[i * 4 + 2] = p[2];
-      imgData.data[i * 4 + 3] = 255;
-      nextF[cls * H * W + i]  = 1.0;
+        const d = res.deltas.data;
+        let vx = d[0], vy = d[1], rw = d[2], rh = d[3];
+
+        const DZ = 0.02;
+        if (Math.abs(vx) < DZ) vx = 0;
+        if (Math.abs(vy) < DZ) vy = 0;
+        if (Math.abs(rw) < DZ) rw = 0;
+        if (Math.abs(rh) < DZ) rh = 0;
+
+        win.x += vx * 0.1; win.y += vy * 0.1;
+        win.w += rw * 0.1; win.h += rh * 0.1;
+        win.w  = Math.max(0.15, Math.min(0.9, win.w));
+        win.h  = Math.max(0.15, Math.min(0.9, win.h));
+        win.x  = Math.max(0, Math.min(1 - win.w, win.x));
+        win.y  = Math.max(0, Math.min(1 - win.h, win.y));
+
+        // Update dashboard
+        ui.click.style.width = (click * 100) + '%';
+        ui.lblClick.textContent = click ? 'ACTIVE' : 'IDLE';
+
+        drawRadar(ctxInM, dhx, dhy, '#0f0');
+        drawRadar(ctxInR, dgx, dgy, '#f80');
+        drawBrain(res.act_m2.data, res.act_r2.data);
+
+        drawBar(ui.vx, ui.lbl_vx, vx);
+        drawBar(ui.vy, ui.lbl_vy, vy);
+        drawBar(ui.rw, ui.lbl_rw, rw);
+        drawBar(ui.rh, ui.lbl_rh, rh);
+
+        if (vx !== 0 || vy !== 0) {
+          ui.status.textContent = 'MOVING';  ui.status.style.color = '#0f0';
+        } else if (rw !== 0 || rh !== 0) {
+          ui.status.textContent = 'RESIZING'; ui.status.style.color = '#f80';
+        } else {
+          ui.status.textContent = 'IDLE';    ui.status.style.color = '#333';
+        }
+
+      } catch (e) { console.error(e); }
     }
 
-    ctx.putImageData(imgData, 0, 0);
-    stack.shift();
-    stack.push(nextF);
-
-    // Decay motion so the window doesn't drift when mouse is still
-    dx *= 0.1;
-    dy *= 0.1;
-
+    drawOS();
     requestAnimationFrame(loop);
   }
 
-  // ── Init ─────────────────────────────────────────────────────────────────────
+  // ── Init ──────────────────────────────────────────────────────────────────────
   async function init() {
     try {
-      overlayText.textContent = 'Fetching model...';
-      progressBar.style.width = '10%';
+      loadText.textContent = 'Fetching model...';
+      loadBar.style.width = '15%';
 
-      const resp = await fetch('neural_os.onnx');
-      if (!resp.ok) throw new Error(`HTTP ${resp.status} — make sure neural_os.onnx is in the same folder`);
+      const resp = await fetch('widescreen_controller.onnx');
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-      progressBar.style.width = '40%';
-      overlayText.textContent = 'Decoding...';
+      loadBar.style.width = '50%';
+      loadText.textContent = 'Loading...';
 
       const buffer = await resp.arrayBuffer();
-      progressBar.style.width = '70%';
-      overlayText.textContent = 'Creating session...';
+      loadBar.style.width = '80%';
 
       ort.env.wasm.numThreads = 1;
       sess = await ort.InferenceSession.create(buffer);
 
-      progressBar.style.width = '100%';
-
-      const seed = buildSeedFrame();
-      for (let i = 0; i < SS; i++) stack.push(seed.slice());
-
-      // Short delay so the progress bar hits 100% visibly
-      await new Promise(r => setTimeout(r, 300));
-      overlay.classList.add('hidden');
+      loadBar.style.width = '100%';
+      await new Promise(r => setTimeout(r, 250));
+      loading.classList.add('hidden');
 
       requestAnimationFrame(loop);
-
     } catch (e) {
-      overlayText.textContent = 'Error: ' + e.message;
-      overlayText.style.color = '#f55';
-      progressBar.style.background = '#f55';
-      console.error(e);
+      loadText.textContent = 'Error: ' + e.message;
+      loadText.style.color = '#f55';
     }
   }
 
