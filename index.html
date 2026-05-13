@@ -8,8 +8,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #000;
-      color: #ddd;
+      background: #f5f5f0;
+      color: #222;
       font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
       display: flex;
       flex-direction: column;
@@ -24,25 +24,26 @@
       max-width: 700px;
     }
 
-    h1 { font-size: 16px; color: #fff; letter-spacing: 0.08em; margin-bottom: 8px; }
+    h1 { font-size: 16px; color: #111; letter-spacing: 0.08em; margin-bottom: 8px; }
 
-    .subtitle { font-size: 11px; color: #444; line-height: 1.7; }
-    .subtitle a { color: #0a0; text-decoration: none; }
-    .subtitle a:hover { color: #0f0; }
+    .subtitle { font-size: 11px; color: #888; line-height: 1.7; }
+    .subtitle a { color: #060; text-decoration: none; }
+    .subtitle a:hover { color: #090; }
 
     /* ── Main layout ── */
     .layout {
       display: flex;
       gap: 15px;
-      background: #000;
+      background: #fff;
       padding: 15px;
-      border: 1px solid #1a1a1a;
+      border: 1px solid #ddd;
       border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
 
     #cvs_os {
-      border: 2px solid #222;
-      background: #050505;
+      border: 1px solid #ccc;
+      background: #1a1a2e;
       border-radius: 4px;
       cursor: none;
       display: block;
@@ -52,8 +53,8 @@
     .panel { width: 260px; display: flex; flex-direction: column; gap: 10px; }
 
     .card {
-      background: #111;
-      border: 1px solid #1e1e1e;
+      background: #fafafa;
+      border: 1px solid #e8e8e8;
       padding: 10px;
       border-radius: 6px;
     }
@@ -61,23 +62,23 @@
     .card h4 {
       margin: 0 0 8px 0;
       font-size: 10px;
-      color: #555;
+      color: #aaa;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      border-bottom: 1px solid #1e1e1e;
+      border-bottom: 1px solid #eee;
       padding-bottom: 5px;
     }
 
     .label {
       font-size: 10px;
-      color: #444;
+      color: #aaa;
       display: flex;
       justify-content: space-between;
       margin-bottom: 3px;
     }
 
     .bar-track {
-      background: #1a1a1a;
+      background: #eee;
       height: 5px;
       border-radius: 3px;
       position: relative;
@@ -92,10 +93,10 @@
       text-align: center;
       font-size: 14px;
       font-weight: bold;
-      color: #333;
+      color: #ccc;
       padding: 10px;
-      border: 1px solid #1e1e1e;
-      background: #080808;
+      border: 1px solid #eee;
+      background: #f5f5f5;
       border-radius: 4px;
       letter-spacing: 0.1em;
     }
@@ -109,19 +110,19 @@
     }
 
     footer a {
-      color: #333;
+      color: #bbb;
       text-decoration: none;
-      border-bottom: 1px solid #1e1e1e;
+      border-bottom: 1px solid #ddd;
       padding-bottom: 1px;
       transition: color 0.2s, border-color 0.2s;
     }
 
-    footer a:hover { color: #0f0; border-color: #0f0; }
+    footer a:hover { color: #060; border-color: #060; }
 
     #loading {
       position: fixed;
       inset: 0;
-      background: #000;
+      background: #f5f5f0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -132,14 +133,14 @@
 
     #loading.hidden { display: none; }
 
-    #load-text { font-size: 12px; color: #0f0; }
+    #load-text { font-size: 12px; color: #060; }
 
     #load-bar-wrap {
       width: 180px; height: 2px;
-      background: #111; border-radius: 2px; overflow: hidden;
+      background: #ddd; border-radius: 2px; overflow: hidden;
     }
 
-    #load-bar { height: 100%; width: 0%; background: #0f0; transition: width 0.2s; }
+    #load-bar { height: 100%; width: 0%; background: #060; transition: width 0.2s; }
   </style>
 </head>
 <body>
@@ -167,7 +168,7 @@
   <div class="panel">
 
     <div style="text-align:center;">
-      <button onclick="resetWindow()" style="background:#1a0000; color:#f55; border:1px solid #440000; padding:7px 0; cursor:pointer; font-family:inherit; font-size:11px; border-radius:4px; width:100%; letter-spacing:0.1em;">RESET</button>
+      <button onclick="resetWindow()" style="background:#fff0f0; color:#c00; border:1px solid #f5c0c0; padding:7px 0; cursor:pointer; font-family:inherit; font-size:11px; border-radius:4px; width:100%; letter-spacing:0.1em;">RESET</button>
     </div>
 
     <div class="card">
@@ -178,19 +179,19 @@
       <div style="display:flex; gap:6px; margin-top:4px;">
         <div style="flex:1;">
           <div class="label">DIST HEADER</div>
-          <canvas id="vis_in_move" width="110" height="55" style="background:#000; border:1px solid #1e1e1e; width:100%; display:block;"></canvas>
+          <canvas id="vis_in_move" width="110" height="55" style="background:#f0f0f0; border:1px solid #ddd; width:100%; display:block;"></canvas>
         </div>
         <div style="flex:1;">
           <div class="label">DIST GRIP</div>
-          <canvas id="vis_in_resize" width="110" height="55" style="background:#000; border:1px solid #1e1e1e; width:100%; display:block;"></canvas>
+          <canvas id="vis_in_resize" width="110" height="55" style="background:#f0f0f0; border:1px solid #ddd; width:100%; display:block;"></canvas>
         </div>
       </div>
     </div>
 
     <div class="card">
       <h4>Neural Activity</h4>
-      <canvas id="vis_brain" width="240" height="55" style="width:100%; image-rendering:pixelated; background:#000; display:block;"></canvas>
-      <div style="display:flex; justify-content:center; gap:16px; margin-top:5px; font-size:10px; color:#333;">
+      <canvas id="vis_brain" width="240" height="55" style="width:100%; image-rendering:pixelated; background:#f0f0f0; display:block;"></canvas>
+      <div style="display:flex; justify-content:center; gap:16px; margin-top:5px; font-size:10px; color:#999;">
         <span style="color:#0a0;">&#9632; MOVE</span>
         <span style="color:#840;">&#9632; RESIZE</span>
       </div>
@@ -221,6 +222,7 @@
 
 <footer>
   <a href="https://colab.research.google.com/drive/1wrc67GjQErvWOsWSwoWndiKf-Wx-EZpz" target="_blank">Open in Colab</a>
+  <a href="https://github.com/lusob/neural-os#how-it-works" target="_blank">How it works</a>
   <a href="https://github.com/lusob/neural-os" target="_blank">Source on GitHub</a>
   <a href="https://arxiv.org/abs/2604.06425" target="_blank">Neural Computers paper</a>
 </footer>
@@ -288,8 +290,8 @@
   // ── Helpers ──────────────────────────────────────────────────────────────────
   function drawRadar(ctx, dx, dy, color) {
     const cw = ctx.canvas.width, ch = ctx.canvas.height;
-    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
-    ctx.strokeStyle = '#1a1a1a'; ctx.lineWidth = 1;
+    ctx.fillStyle = '#f0f0f0'; ctx.fillRect(0, 0, cw, ch);
+    ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(cw/2, 0); ctx.lineTo(cw/2, ch); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(0, ch/2); ctx.lineTo(cw, ch/2); ctx.stroke();
     const px = cw/2 + dx * 2 * cw/2;
@@ -309,12 +311,12 @@
 
   function drawBrain(m2, r2) {
     const bw = ctxBrain.canvas.width, bh = ctxBrain.canvas.height;
-    ctxBrain.clearRect(0, 0, bw, bh);
+    ctxBrain.fillStyle = '#f0f0f0'; ctxBrain.fillRect(0, 0, bw, bh);
     const cw = bw / 64;
     for (let i = 0; i < 64; i++) {
-      ctxBrain.fillStyle = `rgba(0,200,0,${m2[i]})`;
+      ctxBrain.fillStyle = `rgba(0,140,0,${m2[i]})`;
       ctxBrain.fillRect(i * cw, 0, cw - 1, bh / 2 - 1);
-      ctxBrain.fillStyle = `rgba(255,140,0,${r2[i]})`;
+      ctxBrain.fillStyle = `rgba(200,100,0,${r2[i]})`;
       ctxBrain.fillRect(i * cw, bh / 2, cw - 1, bh / 2);
     }
   }
